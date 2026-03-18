@@ -1,0 +1,14 @@
+@* File: Delete.cshtml | Author: Team ## | Course: ISTM 415 *@
+@model JasperGreen.Models.Employee
+@{
+    ViewData["Title"] = "Delete Employee";
+}
+
+<h2>Delete Employee</h2>
+<p>Delete <strong>@Model.FullName</strong> hired on @Model.HireDate.ToShortDateString()?</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="EmployeeID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<form asp-action="Cancel" method="post" class="mt-2"><button type="submit" class="btn btn-secondary">Cancel</button></form>

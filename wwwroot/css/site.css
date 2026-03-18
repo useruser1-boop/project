@@ -1,0 +1,43 @@
+﻿/* File: site.css | Author: Team ## | Course: ISTM 415 */
+:root {
+  --jg-green: #2e7d32;
+  --jg-green-light: #66bb6a;
+  --jg-dark: #1b1b1b;
+}
+
+/* Header */
+header {
+  background-color: var(--jg-green);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.jg-logo { height: 60px; width: auto; }
+.jg-brand { font-size: 1.8rem; font-weight: 700; color: white; }
+
+/* Navbar */
+.navbar { background-color: var(--jg-dark); }
+.navbar .nav-link { color: #ccc !important; }
+.navbar .nav-link:hover { color: var(--jg-green-light) !important; }
+
+/* Footer */
+footer {
+  background-color: var(--jg-dark);
+  color: #ccc;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 3rem;
+}
+
+/* Main content */
+main.container { padding-top: 2rem; padding-bottom: 2rem; }
+
+/* Validation error highlight (used in later phases) */
+input.input-validation-error,
+select.input-validation-error,
+textarea.input-validation-error {
+  border: 1px solid #c62828 !important;
+  background-color: #ffebee !important;
+}

@@ -1,0 +1,73 @@
+@* File: AddEdit.cshtml | Author: Team ## | Course: ISTM 415 *@
+@model JasperGreen.Models.Customer
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = Model.CustomerID == 0 ? "Add Customer" : "Edit Customer";
+    var states = ViewBag.States as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(Model.CustomerID == 0 ? "Add" : "Edit")" method="post">
+    <input type="hidden" asp-for="CustomerID" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="FirstName" class="form-label">First Name *</label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="LastName" class="form-label">Last Name *</label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Phone" class="form-label">Phone</label>
+            <input asp-for="Phone" class="form-control" />
+            <small class="form-text text-muted">Format: 10 digits (##########)</small>
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Address" class="form-label">Address</label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="City" class="form-label">City</label>
+            <input asp-for="City" class="form-control" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="State" class="form-label">State</label>
+            <select asp-for="State" asp-items="states" class="form-select"></select>
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="ZipCode" class="form-label">ZIP Code *</label>
+            <input asp-for="ZipCode" class="form-control" />
+            <small class="form-text text-muted">Format: 12345 or 123456789</small>
+            <span asp-validation-for="ZipCode" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
+
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+}

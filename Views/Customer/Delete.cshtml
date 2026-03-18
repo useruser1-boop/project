@@ -1,0 +1,17 @@
+@* File: Delete.cshtml | Author: Team ## | Course: ISTM 415 *@
+@model JasperGreen.Models.Customer
+@{
+    ViewData["Title"] = "Delete Customer";
+}
+
+<h2>Delete Customer</h2>
+<p>Are you sure you want to delete <strong>@Model.FullName</strong>?</p>
+<p><strong>Address:</strong> @Model.Address, @Model.City, @Model.State @Model.ZipCode</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="CustomerID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
