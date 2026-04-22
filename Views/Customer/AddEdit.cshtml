@@ -1,4 +1,4 @@
-@* File: AddEdit.cshtml | Author: Team ## | Course: ISTM 415 *@
+@* File: AddEdit.cshtml | Author: Team 05 | Course: ISTM 415 *@
 @model JasperGreen.Models.Customer
 @using Microsoft.AspNetCore.Mvc.Rendering
 @{
@@ -24,10 +24,9 @@
             <span asp-validation-for="LastName" class="text-danger"></span>
         </div>
         <div class="col-md-6">
-            <label asp-for="Phone" class="form-label">Phone</label>
-            <input asp-for="Phone" class="form-control" />
-            <small class="form-text text-muted">Format: 10 digits (##########)</small>
-            <span asp-validation-for="Phone" class="text-danger"></span>
+            <label asp-for="CustomerPhone" class="form-label">Phone</label>
+            <input asp-for="CustomerPhone" class="form-control" placeholder="10 digits" />
+            <span asp-validation-for="CustomerPhone" class="text-danger"></span>
         </div>
         <div class="col-md-6">
             <label asp-for="Email" class="form-label">Email</label>
@@ -35,25 +34,24 @@
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="col-md-6">
-            <label asp-for="Address" class="form-label">Address</label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
+            <label asp-for="BillingAddress" class="form-label">Billing Address</label>
+            <input asp-for="BillingAddress" class="form-control" />
+            <span asp-validation-for="BillingAddress" class="text-danger"></span>
         </div>
         <div class="col-md-3">
-            <label asp-for="City" class="form-label">City</label>
-            <input asp-for="City" class="form-control" />
-            <span asp-validation-for="City" class="text-danger"></span>
+            <label asp-for="BillingCity" class="form-label">City</label>
+            <input asp-for="BillingCity" class="form-control" />
+            <span asp-validation-for="BillingCity" class="text-danger"></span>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="BillingState" class="form-label">State</label>
+            <select asp-for="BillingState" asp-items="states" class="form-select"></select>
+            <span asp-validation-for="BillingState" class="text-danger"></span>
         </div>
         <div class="col-md-3">
-            <label asp-for="State" class="form-label">State</label>
-            <select asp-for="State" asp-items="states" class="form-select"></select>
-            <span asp-validation-for="State" class="text-danger"></span>
-        </div>
-        <div class="col-md-4">
-            <label asp-for="ZipCode" class="form-label">ZIP Code *</label>
-            <input asp-for="ZipCode" class="form-control" />
-            <small class="form-text text-muted">Format: 12345 or 123456789</small>
-            <span asp-validation-for="ZipCode" class="text-danger"></span>
+            <label asp-for="BillingZIP" class="form-label">ZIP</label>
+            <input asp-for="BillingZIP" class="form-control" />
+            <span asp-validation-for="BillingZIP" class="text-danger"></span>
         </div>
     </div>
 
@@ -67,7 +65,5 @@
 </form>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
 }

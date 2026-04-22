@@ -1,4 +1,4 @@
-// File: HomeController.cs | Author: Team ## | Course: ISTM 415
+// File: HomeController.cs | Author: Team 05 | Course: ISTM 415
 using Microsoft.AspNetCore.Mvc;
 
 namespace JasperGreen.Controllers;
@@ -27,5 +27,5 @@ public class HomeController : Controller
     /// </summary>
     /// <returns>The contact view.</returns>
     [HttpGet]
-    public IActionResult ContactUs() => View();
+    public IActionResult ContactUs() => View();    
 }

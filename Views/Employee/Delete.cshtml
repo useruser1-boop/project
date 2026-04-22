@@ -1,10 +1,16 @@
-@* File: Delete.cshtml | Author: Team ## | Course: ISTM 415 *@
+@* File: Delete.cshtml | Author: Team 05 | Course: ISTM 415 *@
 @model JasperGreen.Models.Employee
 @{
     ViewData["Title"] = "Delete Employee";
 }
 
 <h2>Delete Employee</h2>
+
+@if (TempData["error"] is not null)
+{
+    <div class="alert alert-danger">@TempData["error"]</div>
+}
+
 <p>Delete <strong>@Model.FullName</strong> hired on @Model.HireDate.ToShortDateString()?</p>
 
 <form asp-action="Delete" method="post">

@@ -1,4 +1,6 @@
-// File: CrewController.cs | Author: Team ## | Course: ISTM 415
+// File: CrewController.cs | Author: Team 05 | Course: ISTM 415
+// Description: CRUD controller for Crew entity.
+// On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work.
 using JasperGreen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,156 +16,173 @@ public class CrewController(JasperGreenContext context) : Controller
     private readonly JasperGreenContext _context = context;
 
     /// <summary>
-    /// Displays all crews.
+    /// Displays all crews with foreman and member names.
     /// </summary>
-    /// <returns>The list view.</returns>
+    /// <returns>The crew list view.</returns>
     [HttpGet]
     public IActionResult List()
     {
-        var crews = _context.Crews
+        var lstCrews = _context.Crews
             .Include(c => c.CrewForeman)
             .Include(c => c.CrewMember1)
             .Include(c => c.CrewMember2)
             .OrderBy(c => c.CrewName)
-            .Select(c => new CrewViewModel { Crew = c })
             .ToList();
 
-        return View(crews);
+        return View(lstCrews);
     }
 
     /// <summary>
-    /// Displays add crew form.
+    /// Displays the add crew form with employee dropdowns for foreman and members.
     /// </summary>
-    /// <returns>Add/edit view with dropdown values.</returns>
+    /// <returns>The add/edit view.</returns>
     [HttpGet]
-    public IActionResult Add() => View("AddEdit", BuildViewModel(new Crew()));
+    public IActionResult Add()
+    {
+        LoadEmployees();
+        return View("AddEdit", new Crew());
+    }
 
     /// <summary>
-    /// Creates a crew.
+    /// Creates a new crew record.
     /// </summary>
-    /// <param name="viewModel">Crew view model payload.</param>
-    /// <returns>Redirect or form view.</returns>
+    /// <param name="crew">Crew data submitted from the form.</param>
+    /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Add(CrewViewModel viewModel)
+    public IActionResult Add(Crew crew)
     {
         if (!ModelState.IsValid)
         {
-            return View("AddEdit", BuildViewModel(viewModel.Crew));
+            LoadEmployees();
+            return View("AddEdit", crew);
         }
 
-        // Ensure foreman/member assignments are unique per project rules.
-        if (!AreDistinctEmployees(viewModel.Crew))
+        // Foreman and both crew members must be three distinct employees.
+        if (!AreDistinctEmployees(crew))
         {
             ModelState.AddModelError("", "Crew Foreman and both Crew Members must be three distinct employees.");
-            return View("AddEdit", BuildViewModel(viewModel.Crew));
+            LoadEmployees();
+            return View("AddEdit", crew);
         }
 
-        _context.Crews.Add(viewModel.Crew);
+        _context.Crews.Add(crew);
         _context.SaveChanges();
-        TempData["message"] = $"Crew {viewModel.Crew.CrewName} was added successfully.";
+        TempData["message"] = $"Crew {crew.CrewName} was added successfully.";
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Displays edit crew form.
+    /// Displays the edit form for an existing crew with employee dropdowns pre-selected.
     /// </summary>
-    /// <param name="id">Crew identifier.</param>
-    /// <returns>Add/edit view.</returns>
+    /// <param name="id">The crew identifier.</param>
+    /// <returns>The add/edit view pre-populated with existing crew data.</returns>
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        var crew = _context.Crews.FirstOrDefault(c => c.CrewID == id);
-        if (crew is null)
+        var objCrew = _context.Crews.FirstOrDefault(c => c.CrewID == id);
+        if (objCrew is null)
         {
             return RedirectToAction(nameof(List));
         }
 
-        return View("AddEdit", BuildViewModel(crew));
+        LoadEmployees();
+        return View("AddEdit", objCrew);
     }
 
     /// <summary>
-    /// Updates a crew.
+    /// Updates an existing crew record.
     /// </summary>
-    /// <param name="viewModel">Crew view model payload.</param>
-    /// <returns>Redirect or form view.</returns>
+    /// <param name="crew">Updated crew data submitted from the form.</param>
+    /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(CrewViewModel viewModel)
+    public IActionResult Edit(Crew crew)
     {
         if (!ModelState.IsValid)
         {
-            return View("AddEdit", BuildViewModel(viewModel.Crew));
+            LoadEmployees();
+            return View("AddEdit", crew);
         }
 
-        // Ensure foreman/member assignments are unique per project rules.
-        if (!AreDistinctEmployees(viewModel.Crew))
+        // Foreman and both crew members must be three distinct employees.
+        if (!AreDistinctEmployees(crew))
         {
             ModelState.AddModelError("", "Crew Foreman and both Crew Members must be three distinct employees.");
-            return View("AddEdit", BuildViewModel(viewModel.Crew));
+            LoadEmployees();
+            return View("AddEdit", crew);
         }
 
-        _context.Crews.Update(viewModel.Crew);
+        _context.Crews.Update(crew);
         _context.SaveChanges();
-        TempData["message"] = $"Crew {viewModel.Crew.CrewName} was updated successfully.";
+        TempData["message"] = $"Crew {crew.CrewName} was updated successfully.";
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Displays delete confirmation.
+    /// Displays the delete confirmation page for a crew.
     /// </summary>
-    /// <param name="id">Crew identifier.</param>
-    /// <returns>Delete view.</returns>
+    /// <param name="id">The crew identifier.</param>
+    /// <returns>The delete confirmation view with foreman and member details.</returns>
     [HttpGet]
     public IActionResult Delete(int id)
     {
-        var crew = _context.Crews
+        var objCrew = _context.Crews
             .Include(c => c.CrewForeman)
             .Include(c => c.CrewMember1)
             .Include(c => c.CrewMember2)
             .FirstOrDefault(c => c.CrewID == id);
 
-        if (crew is null)
+        if (objCrew is null)
         {
             return RedirectToAction(nameof(List));
         }
 
-        return View(crew);
+        return View(objCrew);
     }
 
     /// <summary>
-    /// Deletes a crew.
+    /// Permanently removes a crew record from the database.
+    /// Redirects back to the confirmation page with an error if service records prevent deletion.
     /// </summary>
-    /// <param name="crew">Crew payload.</param>
-    /// <returns>Redirect to list.</returns>
+    /// <param name="crew">Crew payload containing the identifier.</param>
+    /// <returns>Redirects to the crew list on success; returns delete view on constraint violation.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(Crew crew)
     {
-        var current = _context.Crews.FirstOrDefault(c => c.CrewID == crew.CrewID);
-        if (current is not null)
+        var objCurrent = _context.Crews.FirstOrDefault(c => c.CrewID == crew.CrewID);
+        if (objCurrent is not null)
         {
-            _context.Crews.Remove(current);
-            _context.SaveChanges();
-            TempData["message"] = $"Crew {current.CrewName} was deleted.";
+            try
+            {
+                _context.Crews.Remove(objCurrent);
+                _context.SaveChanges();
+                TempData["message"] = $"Crew {objCurrent.CrewName} was deleted.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["error"] = $"Cannot delete crew {objCurrent.CrewName} because it has associated service records.";
+                return RedirectToAction(nameof(Delete), new { id = objCurrent.CrewID });
+            }
         }
 
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Cancels current operation and returns to list.
+    /// Cancels the current operation and returns to the crew list.
     /// </summary>
-    /// <returns>Redirect to list action.</returns>
+    /// <returns>Redirect to the list action.</returns>
     [HttpPost]
     public IActionResult Cancel() => RedirectToAction(nameof(List));
 
-    // Builds the crew view model and employee dropdown list for all three selectors.
-    private CrewViewModel BuildViewModel(Crew crew)
+    // Populates ViewBag.Employees with all employees sorted by name for the three crew dropdowns.
+    private void LoadEmployees()
     {
-        var employeeOptions = _context.Employees
-            .OrderBy(e => e.LastName)
-            .ThenBy(e => e.FirstName)
+        var lstEmployeeOptions = _context.Employees
+            .OrderBy(e => e.EmployeeLastName)
+            .ThenBy(e => e.EmployeeFirstName)
             .Select(e => new SelectListItem
             {
                 Value = e.EmployeeID.ToString(),
@@ -171,18 +190,14 @@ public class CrewController(JasperGreenContext context) : Controller
             })
             .ToList();
 
-        return new CrewViewModel
-        {
-            Crew = crew,
-            Employees = employeeOptions
-        };
+        ViewBag.Employees = lstEmployeeOptions;
     }
 
-    // Custom validation rule that requires foreman/member IDs to be distinct.
+    // Validates that the foreman and two crew members are three distinct employees.
     private static bool AreDistinctEmployees(Crew crew)
     {
         return crew.CrewForemanID != crew.CrewMember1ID
             && crew.CrewForemanID != crew.CrewMember2ID
             && crew.CrewMember1ID != crew.CrewMember2ID;
-    }
+    }  
 }

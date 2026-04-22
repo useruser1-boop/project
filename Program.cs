@@ -1,4 +1,4 @@
-// File: Program.cs | Course: ISTM 415
+// File: Program.cs | Course: ISTM 415 | Author: Team 05 |
 using JasperGreen.Models;
 using Microsoft.EntityFrameworkCore;
 

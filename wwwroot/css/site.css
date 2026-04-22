@@ -1,4 +1,4 @@
-﻿/* File: site.css | Author: Team ## | Course: ISTM 415 */
+﻿/* File: site.css | Author: Team 05 | Course: ISTM 415 */
 :root {
   --jg-green: #2e7d32;
   --jg-green-light: #66bb6a;
@@ -34,7 +34,7 @@ footer {
 /* Main content */
 main.container { padding-top: 2rem; padding-bottom: 2rem; }
 
-/* Validation error highlight (used in later phases) */
+/* Validation error highlight  */
 input.input-validation-error,
 select.input-validation-error,
 textarea.input-validation-error {

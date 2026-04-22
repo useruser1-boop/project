@@ -1,4 +1,4 @@
-// File: Crew.cs | Author: Team ## | Course: ISTM 415
+// File: Crew.cs | Author: Team 05 | Course: ISTM 415
 using System.ComponentModel.DataAnnotations;
 
 namespace JasperGreen.Models;

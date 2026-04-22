@@ -1,40 +1,58 @@
-@* File: AddEdit.cshtml | Author: Team ## | Course: ISTM 415 *@
-@model JasperGreen.Models.CrewViewModel
+@* File: AddEdit.cshtml | Author: Team 05 | Date: 2026-04-13
+   Description: Shared add/edit form for Crew entity. Uses ViewBag.Employees for all three dropdowns.
+   On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work. *@
+@model JasperGreen.Models.Crew
+@using Microsoft.AspNetCore.Mvc.Rendering
 @{
-    ViewData["Title"] = Model.Crew.CrewID == 0 ? "Add Crew" : "Edit Crew";
+    ViewData["Title"] = Model.CrewID == 0 ? "Add Crew" : "Edit Crew";
+    var lstEmployees = ViewBag.Employees as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="@(Model.Crew.CrewID == 0 ? "Add" : "Edit")" method="post">
-    <input type="hidden" asp-for="Crew.CrewID" />
+<form asp-action="@(Model.CrewID == 0 ? "Add" : "Edit")" method="post">
+    <input type="hidden" asp-for="CrewID" />
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="Crew.CrewName" class="form-label"></label>
-        <input asp-for="Crew.CrewName" class="form-control" />
-        <span asp-validation-for="Crew.CrewName" class="text-danger"></span>
+        <label asp-for="CrewName" class="form-label">Crew Name *</label>
+        <input asp-for="CrewName" class="form-control" />
+        <span asp-validation-for="CrewName" class="text-danger"></span>
     </div>
 
     <div class="row g-3">
         <div class="col-md-4">
-            <label asp-for="Crew.CrewForemanID" class="form-label">Crew Foreman</label>
-            <select asp-for="Crew.CrewForemanID" asp-items="Model.Employees" class="form-select"></select>
-            <span asp-validation-for="Crew.CrewForemanID" class="text-danger"></span>
+            <label asp-for="CrewForemanID" class="form-label">Crew Foreman *</label>
+            <select asp-for="CrewForemanID" asp-items="lstEmployees" class="form-select">
+                <option value="">-- Select Foreman --</option>
+            </select>
+            <span asp-validation-for="CrewForemanID" class="text-danger"></span>
         </div>
         <div class="col-md-4">
-            <label asp-for="Crew.CrewMember1ID" class="form-label">Crew Member 1</label>
-            <select asp-for="Crew.CrewMember1ID" asp-items="Model.Employees" class="form-select"></select>
-            <span asp-validation-for="Crew.CrewMember1ID" class="text-danger"></span>
+            <label asp-for="CrewMember1ID" class="form-label">Crew Member 1 *</label>
+            <select asp-for="CrewMember1ID" asp-items="lstEmployees" class="form-select">
+                <option value="">-- Select Member 1 --</option>
+            </select>
+            <span asp-validation-for="CrewMember1ID" class="text-danger"></span>
         </div>
         <div class="col-md-4">
-            <label asp-for="Crew.CrewMember2ID" class="form-label">Crew Member 2</label>
-            <select asp-for="Crew.CrewMember2ID" asp-items="Model.Employees" class="form-select"></select>
-            <span asp-validation-for="Crew.CrewMember2ID" class="text-danger"></span>
+            <label asp-for="CrewMember2ID" class="form-label">Crew Member 2 *</label>
+            <select asp-for="CrewMember2ID" asp-items="lstEmployees" class="form-select">
+                <option value="">-- Select Member 2 --</option>
+            </select>
+            <span asp-validation-for="CrewMember2ID" class="text-danger"></span>
         </div>
     </div>
 
-    <div class="mt-3"><button type="submit" class="btn btn-success">Save</button></div>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
 </form>
 
-<form asp-action="Cancel" method="post" class="mt-2"><button type="submit" class="btn btn-secondary">Cancel</button></form>
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

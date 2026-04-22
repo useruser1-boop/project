@@ -1,4 +1,6 @@
-// File: CustomerController.cs | Author: Team ## | Course: ISTM 415
+// File: CustomerController.cs | Author: Team 05 | Course: ISTM 415
+// Description: CRUD controller for Customer entity.
+// On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work.
 using JasperGreen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,19 +16,19 @@ public class CustomerController(JasperGreenContext context) : Controller
     private readonly JasperGreenContext _context = context;
 
     /// <summary>
-    /// Displays all customers.
+    /// Displays all customers sorted by last name, then first name.
     /// </summary>
     /// <returns>The customer list view.</returns>
     [HttpGet]
     public IActionResult List()
     {
-        var customers = _context.Customers
+        var lstCustomers = _context.Customers
             .Include(c => c.Properties)
             .OrderBy(c => c.LastName)
             .ThenBy(c => c.FirstName)
             .ToList();
 
-        return View(customers);
+        return View(lstCustomers);
     }
 
     /// <summary>
@@ -41,10 +43,10 @@ public class CustomerController(JasperGreenContext context) : Controller
     }
 
     /// <summary>
-    /// Creates a new customer.
+    /// Creates a new customer record.
     /// </summary>
-    /// <param name="customer">Customer data.</param>
-    /// <returns>Redirect to list when valid; otherwise form view.</returns>
+    /// <param name="customer">Customer data submitted from the form.</param>
+    /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Add(Customer customer)
@@ -62,31 +64,31 @@ public class CustomerController(JasperGreenContext context) : Controller
     }
 
     /// <summary>
-    /// Displays the edit customer form.
+    /// Displays the edit form for an existing customer.
     /// </summary>
-    /// <param name="id">Customer identifier.</param>
-    /// <returns>The add/edit view.</returns>
+    /// <param name="id">The customer identifier.</param>
+    /// <returns>The add/edit view pre-populated with existing data.</returns>
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        var customer = _context.Customers
+        var objCustomer = _context.Customers
             .Include(c => c.Properties)
             .FirstOrDefault(c => c.CustomerID == id);
 
-        if (customer is null)
+        if (objCustomer is null)
         {
             return RedirectToAction(nameof(List));
         }
 
         LoadStates();
-        return View("AddEdit", customer);
+        return View("AddEdit", objCustomer);
     }
 
     /// <summary>
-    /// Updates an existing customer.
+    /// Updates an existing customer record.
     /// </summary>
-    /// <param name="customer">Updated customer data.</param>
-    /// <returns>Redirect to list when valid; otherwise form view.</returns>
+    /// <param name="customer">Updated customer data submitted from the form.</param>
+    /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Customer customer)
@@ -104,50 +106,59 @@ public class CustomerController(JasperGreenContext context) : Controller
     }
 
     /// <summary>
-    /// Displays delete confirmation.
+    /// Displays the delete confirmation page for a customer.
     /// </summary>
-    /// <param name="id">Customer identifier.</param>
-    /// <returns>The delete view.</returns>
+    /// <param name="id">The customer identifier.</param>
+    /// <returns>The delete confirmation view.</returns>
     [HttpGet]
     public IActionResult Delete(int id)
     {
-        var customer = _context.Customers.FirstOrDefault(c => c.CustomerID == id);
-        if (customer is null)
+        var objCustomer = _context.Customers.FirstOrDefault(c => c.CustomerID == id);
+        if (objCustomer is null)
         {
             return RedirectToAction(nameof(List));
         }
 
-        return View(customer);
+        return View(objCustomer);
     }
 
     /// <summary>
-    /// Deletes an existing customer.
+    /// Permanently removes a customer record from the database.
+    /// Redirects back to the confirmation page with an error if related records prevent deletion.
     /// </summary>
-    /// <param name="customer">Customer payload.</param>
-    /// <returns>Redirects to list.</returns>
+    /// <param name="customer">Customer payload containing the identifier.</param>
+    /// <returns>Redirects to the customer list on success; returns delete view on constraint violation.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(Customer customer)
     {
-        var current = _context.Customers.FirstOrDefault(c => c.CustomerID == customer.CustomerID);
-        if (current is not null)
+        var objCurrent = _context.Customers.FirstOrDefault(c => c.CustomerID == customer.CustomerID);
+        if (objCurrent is not null)
         {
-            _context.Customers.Remove(current);
-            _context.SaveChanges();
-            TempData["message"] = $"Customer {current.FullName} was deleted.";
+            try
+            {
+                _context.Customers.Remove(objCurrent);
+                _context.SaveChanges();
+                TempData["message"] = $"Customer {objCurrent.FullName} was deleted.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["error"] = $"Cannot delete {objCurrent.FullName} because they have associated properties, payments, or service records.";
+                return RedirectToAction(nameof(Delete), new { id = objCurrent.CustomerID });
+            }
         }
 
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Cancels current operation and returns to list.
+    /// Cancels the current operation and returns to the customer list.
     /// </summary>
-    /// <returns>Redirect to list action.</returns>
+    /// <returns>Redirect to the list action.</returns>
     [HttpPost]
     public IActionResult Cancel() => RedirectToAction(nameof(List));
 
-    // Loads state abbreviations for customer dropdown selection.
+    // Populates ViewBag.States with all US state abbreviations for the billing address dropdown.
     private void LoadStates()
     {
         ViewBag.States = new List<SelectListItem>
@@ -172,5 +183,5 @@ public class CustomerController(JasperGreenContext context) : Controller
             new() { Value = "WA", Text = "WA" }, new() { Value = "WV", Text = "WV" }, new() { Value = "WI", Text = "WI" },
             new() { Value = "WY", Text = "WY" }
         };
-    }
+    }  
 }

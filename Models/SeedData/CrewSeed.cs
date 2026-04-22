@@ -1,4 +1,4 @@
-// File: CrewSeed.cs | Author: Team ## | Course: ISTM 415
+// File: CrewSeed.cs | Author: Team #05| Course: ISTM 415
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,7 +10,7 @@ namespace JasperGreen.Models.SeedData;
 public class CrewSeed : IEntityTypeConfiguration<Crew>
 {
     /// <summary>
-    /// Configures crew seed data.
+    /// Configures crew seed data
     /// </summary>
     /// <param name="builder">Entity builder.</param>
     public void Configure(EntityTypeBuilder<Crew> builder)

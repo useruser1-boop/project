@@ -1,11 +1,11 @@
-// File: Property.cs | Author: Team ## | Course: ISTM 415
+// File: Property.cs | Author: Team 05 | Course: ISTM 415
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace JasperGreen.Models;
+namespace JasperGreen.Models;   
 
 /// <summary>
-/// Represents a service property for a customer.
+/// Represents a service property belonging to a customer.
 /// </summary>
 public class Property
 {
@@ -15,49 +15,49 @@ public class Property
     public int PropertyID { get; set; }
 
     /// <summary>
-    /// Gets or sets the customer identifier.
+    /// Gets or sets the owning customer identifier.
     /// </summary>
     [Required]
     public int CustomerID { get; set; }
 
     /// <summary>
-    /// Gets or sets the street address.
+    /// Gets or sets the property street address.     
     /// </summary>
     [Required]
     [StringLength(100)]
-    public string Address { get; set; } = string.Empty;
+    [Display(Name = "Address")]
+    public string PropertyAddress { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the city.
+    /// Gets or sets the property city.
     /// </summary>
     [Required]
     [StringLength(50)]
-    public string City { get; set; } = string.Empty;
+    [Display(Name = "City")]
+    public string PropertyCity { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the state abbreviation.
+    /// Gets or sets the property state abbreviation.
     /// </summary>
     [Required]
     [StringLength(2)]
-    public string State { get; set; } = string.Empty;
+    [Display(Name = "State")]
+    public string PropertyState { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the ZIP code.
+    /// Gets or sets the property ZIP code.
     /// </summary>
     [Required]
-    public string ZipCode { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the lot size.
-    /// </summary>
-    [Column(TypeName = "decimal(10,2)")]
-    public decimal? LotSize { get; set; }
+    [StringLength(10)]
+    [Display(Name = "ZIP")]
+    public string PropertyZIP { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the contracted monthly service fee.
     /// </summary>
     [Required]
     [Column(TypeName = "decimal(10,2)")]
+    [Display(Name = "Service Fee")]
     public decimal ServiceFee { get; set; }
 
     /// <summary>
@@ -70,3 +70,4 @@ public class Property
     /// </summary>
     public ICollection<ProvideService> ProvideServices { get; set; } = new List<ProvideService>();
 }
+ 

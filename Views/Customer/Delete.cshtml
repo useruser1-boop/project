@@ -1,12 +1,18 @@
-@* File: Delete.cshtml | Author: Team ## | Course: ISTM 415 *@
+@* File: Delete.cshtml | Author: Team 05 | Course: ISTM 415 *@
 @model JasperGreen.Models.Customer
 @{
     ViewData["Title"] = "Delete Customer";
 }
 
 <h2>Delete Customer</h2>
+
+@if (TempData["error"] is not null)
+{
+    <div class="alert alert-danger">@TempData["error"]</div>
+}
+
 <p>Are you sure you want to delete <strong>@Model.FullName</strong>?</p>
-<p><strong>Address:</strong> @Model.Address, @Model.City, @Model.State @Model.ZipCode</p>
+<p><strong>Billing Address:</strong> @Model.BillingAddress, @Model.BillingCity, @Model.BillingState @Model.BillingZIP</p>
 
 <form asp-action="Delete" method="post">
     <input type="hidden" asp-for="CustomerID" />

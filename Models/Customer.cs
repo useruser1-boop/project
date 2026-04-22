@@ -1,4 +1,4 @@
-// File: Customer.cs | Author: Team ## | Course: ISTM 415
+// File: Customer.cs | Author: Team 05 | Course: ISTM 415
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,6 +19,7 @@ public class Customer
     /// </summary>
     [Required]
     [StringLength(50)]
+    [Display(Name = "First Name")]
     public string FirstName { get; set; } = string.Empty;
 
     /// <summary>
@@ -26,43 +27,49 @@ public class Customer
     /// </summary>
     [Required]
     [StringLength(50)]
+    [Display(Name = "Last Name")]
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the phone number.
+    /// Gets or sets the billing street address.
+    /// </summary>
+    [StringLength(100)]
+    [Display(Name = "Billing Address")]
+    public string? BillingAddress { get; set; }
+
+    /// <summary>
+    /// Gets or sets the billing city.
+    /// </summary>
+    [StringLength(50)]
+    [Display(Name = "City")]
+    public string? BillingCity { get; set; }
+
+    /// <summary>
+    /// Gets or sets the billing state abbreviation.
+    /// </summary>
+    [StringLength(2)]
+    [Display(Name = "State")]
+    public string? BillingState { get; set; }
+
+    /// <summary>
+    /// Gets or sets the billing ZIP code.
+    /// </summary>
+    [StringLength(10)]
+    [Display(Name = "ZIP")]
+    public string? BillingZIP { get; set; }
+
+    /// <summary>
+    /// Gets or sets the customer phone number.
     /// </summary>
     [StringLength(20)]
-    public string? Phone { get; set; }
+    [Display(Name = "Phone")]
+    public string? CustomerPhone { get; set; }
 
     /// <summary>
     /// Gets or sets the email address.
     /// </summary>
     [StringLength(100)]
     public string? Email { get; set; }
-
-    /// <summary>
-    /// Gets or sets the street address.
-    /// </summary>
-    [StringLength(100)]
-    public string? Address { get; set; }
-
-    /// <summary>
-    /// Gets or sets the city.
-    /// </summary>
-    [StringLength(50)]
-    public string? City { get; set; }
-
-    /// <summary>
-    /// Gets or sets the 2-letter state abbreviation.
-    /// </summary>
-    [StringLength(2)]
-    public string? State { get; set; }
-
-    /// <summary>
-    /// Gets or sets the ZIP code.
-    /// </summary>
-    [StringLength(10)]
-    public string? ZipCode { get; set; }
 
     /// <summary>
     /// Gets the full name.

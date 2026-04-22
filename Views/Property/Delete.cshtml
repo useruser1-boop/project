@@ -1,0 +1,33 @@
+@* File: Delete.cshtml | Author: Team 05 | Date: 2026-04-13
+   Description: Delete confirmation page for Property entity.
+   On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work. *@
+@model JasperGreen.Models.Property
+@{
+    ViewData["Title"] = "Delete Property";
+}
+
+<h2>Delete Property</h2>
+
+@if (TempData["error"] is not null)
+{
+    <div class="alert alert-danger">@TempData["error"]</div>
+}
+
+<p>Are you sure you want to delete this property?</p>
+
+<dl class="row">
+    <dt class="col-sm-3">Customer</dt>
+    <dd class="col-sm-9">@Model.Customer?.FullName</dd>
+    <dt class="col-sm-3">Address</dt>
+    <dd class="col-sm-9">@Model.PropertyAddress, @Model.PropertyCity, @Model.PropertyState @Model.PropertyZIP</dd>
+    <dt class="col-sm-3">Service Fee</dt>
+    <dd class="col-sm-9">@Model.ServiceFee.ToString("C")</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="PropertyID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>

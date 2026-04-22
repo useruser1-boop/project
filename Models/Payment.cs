@@ -1,11 +1,11 @@
-// File: Payment.cs | Author: Team ## | Course: ISTM 415
+// File: Payment.cs | Author: Team 05 | Course: ISTM 415
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace JasperGreen.Models;
+namespace JasperGreen.Models;  
 
 /// <summary>
-/// Represents a payment for a completed service event.
+/// Represents a customer payment.
 /// </summary>
 public class Payment
 {
@@ -15,15 +15,16 @@ public class Payment
     public int PaymentID { get; set; }
 
     /// <summary>
-    /// Gets or sets the linked service event identifier.
+    /// Gets or sets the customer identifier.
     /// </summary>
     [Required]
-    public int ProvideServiceID { get; set; }
+    public int CustomerID { get; set; }
 
     /// <summary>
     /// Gets or sets the payment date.
     /// </summary>
     [Required]
+    [Display(Name = "Payment Date")]
     public DateTime PaymentDate { get; set; }
 
     /// <summary>
@@ -31,10 +32,11 @@ public class Payment
     /// </summary>
     [Required]
     [Column(TypeName = "decimal(10,2)")]
-    public decimal AmountPaid { get; set; }
+    [Display(Name = "Payment Amount")]
+    public decimal PaymentAmount { get; set; }
 
     /// <summary>
-    /// Gets or sets the related service event.
+    /// Gets or sets the customer navigation property.
     /// </summary>
-    public ProvideService? ProvideService { get; set; }
+    public Customer? Customer { get; set; }
 }

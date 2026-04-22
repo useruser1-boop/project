@@ -1,4 +1,4 @@
-// File: CrewViewModel.cs | Author: Team ## | Course: ISTM 415
+// File: CrewViewModel.cs | Author: Team 05 | Course: ISTM 415
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace JasperGreen.Models;
@@ -15,6 +15,6 @@ public class CrewViewModel
 
     /// <summary>
     /// Gets or sets all employee options.
-    /// </summary>
+    /// </summary>   
     public IEnumerable<SelectListItem> Employees { get; set; } = Enumerable.Empty<SelectListItem>();
 }

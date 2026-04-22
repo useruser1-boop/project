@@ -1,4 +1,6 @@
-// File: PropertyController.cs | Author: Team ## | Course: ISTM 415
+// File: PropertyController.cs | Author: Team 05 | Course: ISTM 415
+// Description: CRUD controller for Property entity.
+// On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work.
 using JasperGreen.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,23 +16,23 @@ public class PropertyController(JasperGreenContext context) : Controller
     private readonly JasperGreenContext _context = context;
 
     /// <summary>
-    /// Displays all properties.
+    /// Displays all properties sorted by address, with owning customer information.
     /// </summary>
-    /// <returns>The list view.</returns>
+    /// <returns>The property list view.</returns>
     [HttpGet]
     public IActionResult List()
     {
-        var properties = _context.Properties
+        var lstProperties = _context.Properties
             .Include(p => p.Customer)
             .Include(p => p.ProvideServices)
-            .OrderBy(p => p.Address)
+            .OrderBy(p => p.PropertyAddress)
             .ToList();
 
-        return View(properties);
+        return View(lstProperties);
     }
 
     /// <summary>
-    /// Displays add property form.
+    /// Displays the add property form with a customer dropdown.
     /// </summary>
     /// <returns>The add/edit view.</returns>
     [HttpGet]
@@ -41,10 +43,10 @@ public class PropertyController(JasperGreenContext context) : Controller
     }
 
     /// <summary>
-    /// Creates a property.
+    /// Creates a new property record.
     /// </summary>
-    /// <param name="property">Property payload.</param>
-    /// <returns>Redirect or form view.</returns>
+    /// <param name="property">Property data submitted from the form.</param>
+    /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Add(Property property)
@@ -57,36 +59,36 @@ public class PropertyController(JasperGreenContext context) : Controller
 
         _context.Properties.Add(property);
         _context.SaveChanges();
-        TempData["message"] = $"Property at {property.Address} was added successfully.";
+        TempData["message"] = $"Property at {property.PropertyAddress} was added successfully.";
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Displays edit property form.
+    /// Displays the edit form for an existing property.
     /// </summary>
-    /// <param name="id">Property identifier.</param>
-    /// <returns>The add/edit view.</returns>
+    /// <param name="id">The property identifier.</param>
+    /// <returns>The add/edit view pre-populated with existing data and customer dropdown pre-selected.</returns>
     [HttpGet]
     public IActionResult Edit(int id)
     {
-        var property = _context.Properties
+        var objProperty = _context.Properties
             .Include(p => p.Customer)
             .FirstOrDefault(p => p.PropertyID == id);
 
-        if (property is null)
+        if (objProperty is null)
         {
             return RedirectToAction(nameof(List));
         }
 
         LoadCustomers();
-        return View("AddEdit", property);
+        return View("AddEdit", objProperty);
     }
 
     /// <summary>
-    /// Updates an existing property.
+    /// Updates an existing property record.
     /// </summary>
-    /// <param name="property">Updated property payload.</param>
-    /// <returns>Redirect or form view.</returns>
+    /// <param name="property">Updated property data submitted from the form.</param>
+    /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Property property)
@@ -99,58 +101,67 @@ public class PropertyController(JasperGreenContext context) : Controller
 
         _context.Properties.Update(property);
         _context.SaveChanges();
-        TempData["message"] = $"Property at {property.Address} was updated successfully.";
+        TempData["message"] = $"Property at {property.PropertyAddress} was updated successfully.";
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Displays delete confirmation.
+    /// Displays the delete confirmation page for a property.
     /// </summary>
-    /// <param name="id">Property identifier.</param>
-    /// <returns>Delete view.</returns>
+    /// <param name="id">The property identifier.</param>
+    /// <returns>The delete confirmation view with property and customer details.</returns>
     [HttpGet]
     public IActionResult Delete(int id)
     {
-        var property = _context.Properties
+        var objProperty = _context.Properties
             .Include(p => p.Customer)
             .FirstOrDefault(p => p.PropertyID == id);
 
-        if (property is null)
+        if (objProperty is null)
         {
             return RedirectToAction(nameof(List));
         }
 
-        return View(property);
+        return View(objProperty);
     }
 
     /// <summary>
-    /// Deletes an existing property.
+    /// Permanently removes a property record from the database.
+    /// Redirects back to the confirmation page with an error if related service records prevent deletion.
     /// </summary>
-    /// <param name="property">Property payload.</param>
-    /// <returns>Redirects to list.</returns>
+    /// <param name="property">Property payload containing the identifier.</param>
+    /// <returns>Redirects to the property list on success; returns delete view on constraint violation.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(Property property)
     {
-        var current = _context.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
-        if (current is not null)
+        var objCurrent = _context.Properties.FirstOrDefault(p => p.PropertyID == property.PropertyID);
+        if (objCurrent is not null)
         {
-            _context.Properties.Remove(current);
-            _context.SaveChanges();
-            TempData["message"] = $"Property at {current.Address} was deleted.";
+            try
+            {
+                _context.Properties.Remove(objCurrent);
+                _context.SaveChanges();
+                TempData["message"] = $"Property at {objCurrent.PropertyAddress} was deleted.";
+            }
+            catch (DbUpdateException)
+            {
+                TempData["error"] = $"Cannot delete the property at {objCurrent.PropertyAddress} because it has associated service records.";
+                return RedirectToAction(nameof(Delete), new { id = objCurrent.PropertyID });
+            }
         }
 
         return RedirectToAction(nameof(List));
     }
 
     /// <summary>
-    /// Cancels current operation and returns to list.
+    /// Cancels the current operation and returns to the property list.
     /// </summary>
-    /// <returns>Redirect to list action.</returns>
+    /// <returns>Redirect to the list action.</returns>
     [HttpPost]
     public IActionResult Cancel() => RedirectToAction(nameof(List));
 
-    // Loads customer dropdown options used by add/edit property views.
+    // Populates ViewBag.Customers with customer full names for the property ownership dropdown.
     private void LoadCustomers()
     {
         ViewBag.Customers = _context.Customers
