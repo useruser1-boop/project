@@ -1,0 +1,64 @@
+@* File: AddEdit.cshtml | Author: Team 05 | Course: ISTM 415 *@
+@model JasperGreen.Models.Property
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = Model.PropertyID == 0 ? "Add Property" : "Edit Property";
+    var customers = ViewBag.Customers as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(Model.PropertyID == 0 ? "Add" : "Edit")" method="post">
+    <input type="hidden" asp-for="PropertyID" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="CustomerID" class="form-label">Customer *</label>
+            <select asp-for="CustomerID" asp-items="customers" class="form-select">
+                <option value="">-- Select Customer --</option>
+            </select>
+            <span asp-validation-for="CustomerID" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="PropertyAddress" class="form-label">Property Address *</label>
+            <input asp-for="PropertyAddress" class="form-control" />
+            <span asp-validation-for="PropertyAddress" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="PropertyCity" class="form-label">City *</label>
+            <input asp-for="PropertyCity" class="form-control" />
+            <span asp-validation-for="PropertyCity" class="text-danger"></span>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="PropertyState" class="form-label">State *</label>
+            <input asp-for="PropertyState" class="form-control" maxlength="2" placeholder="TX" />
+            <span asp-validation-for="PropertyState" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="PropertyZIP" class="form-label">ZIP *</label>
+            <input asp-for="PropertyZIP" class="form-control" />
+            <span asp-validation-for="PropertyZIP" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="ServiceFee" class="form-label">Service Fee *</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input asp-for="ServiceFee" class="form-control" />
+            </div>
+            <span asp-validation-for="ServiceFee" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
+
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

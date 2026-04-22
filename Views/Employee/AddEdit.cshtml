@@ -1,0 +1,60 @@
+@* File: AddEdit.cshtml | Author: Team 05 | Course: ISTM 415 *@
+@model JasperGreen.Models.Employee
+@{
+    ViewData["Title"] = Model.EmployeeID == 0 ? "Add Employee" : "Edit Employee";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(Model.EmployeeID == 0 ? "Add" : "Edit")" method="post">
+    <input type="hidden" asp-for="EmployeeID" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="EmployeeFirstName" class="form-label">First Name *</label>
+            <input asp-for="EmployeeFirstName" class="form-control" />
+            <span asp-validation-for="EmployeeFirstName" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="EmployeeLastName" class="form-label">Last Name *</label>
+            <input asp-for="EmployeeLastName" class="form-control" />
+            <span asp-validation-for="EmployeeLastName" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="SSN" class="form-label">SSN *</label>
+            <input asp-for="SSN" class="form-control" placeholder="###-##-####" />
+            <span asp-validation-for="SSN" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="JobTitle" class="form-label">Job Title *</label>
+            <input asp-for="JobTitle" class="form-control" />
+            <span asp-validation-for="JobTitle" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="HireDate" class="form-label">Hire Date *</label>
+            <input asp-for="HireDate" class="form-control" type="date" />
+            <span asp-validation-for="HireDate" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="HourlyRate" class="form-label">Hourly Rate *</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input asp-for="HourlyRate" class="form-control" />
+            </div>
+            <span asp-validation-for="HourlyRate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
+
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

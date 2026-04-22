@@ -1,0 +1,45 @@
+@* File: Index.cshtml | Author: Team 05 | Course: ISTM 415 *@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="jumbotron py-5">
+    <h1 class="display-5 fw-bold text-success">Welcome to Jasper Green</h1>
+    <p class="lead">
+        College Station's trusted lawn care service. We keep your property looking its best, from Kyle Field to the Brazos Valley.
+    </p>
+    <hr class="my-4" />
+    <p>
+        Use the navigation menu above to manage customers, properties, employees, crews,
+        service events, and payments.
+    </p>
+    <a class="btn btn-success btn-lg" asp-controller="Customer" asp-action="List">View Customers</a>
+    <a class="btn btn-outline-secondary btn-lg ms-2" asp-controller="Home" asp-action="About">Learn More</a>
+</div>
+
+<div class="row mt-4 g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-success">250+ Customers</h5>
+                <p class="card-text">Serving both residential and commercial customers across College Station and Bryan, Texas.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-success">21 Service Professionals</h5>
+                <p class="card-text">Our service professionals are organized into 7 experienced crews dedicated to efficient and high quality work.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-success">Core Services</h5>
+                <p class="card-text">Mowing, edging along sidewalks and driveways, and blowing grass clippings, every visit, we deliver.</p>
+            </div>
+        </div>
+    </div>
+</div>
