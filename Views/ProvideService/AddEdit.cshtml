@@ -1,0 +1,50 @@
+@model ProvideService
+@{
+    ViewData["Title"] = Model.ServiceID == 0 ? "Add Service Event" : "Edit Service Event";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(Model.ServiceID == 0 ? "Add" : "Edit")" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" asp-for="ServiceID" />
+
+    <div class="mb-3">
+        <label asp-for="CustomerID" class="form-label">Customer</label>
+        <select asp-for="CustomerID" asp-items="ViewBag.Customers" class="form-select">
+            <option value="">-- Select Customer --</option>
+        </select>
+        <span asp-validation-for="CustomerID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PropertyID" class="form-label">Property</label>
+        <select asp-for="PropertyID" asp-items="ViewBag.Properties" class="form-select">
+            <option value="">-- Select Property --</option>
+        </select>
+        <span asp-validation-for="PropertyID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CrewID" class="form-label">Crew</label>
+        <select asp-for="CrewID" asp-items="ViewBag.Crews" class="form-select">
+            <option value="">-- Select Crew --</option>
+        </select>
+        <span asp-validation-for="CrewID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ServiceDate" class="form-label">Service Date</label>
+        <input asp-for="ServiceDate" type="date" class="form-control" />
+        <span asp-validation-for="ServiceDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ServiceFee" class="form-label">Service Fee</label>
+        <input asp-for="ServiceFee" class="form-control" />
+        <span asp-validation-for="ServiceFee" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>
