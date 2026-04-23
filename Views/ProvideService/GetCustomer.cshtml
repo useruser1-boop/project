@@ -1,0 +1,18 @@
+@model Customer
+@{
+    ViewData["Title"] = "Filter by Customer";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="GetCustomer" method="post">
+    <div class="mb-3">
+        <label class="form-label">Select a Customer</label>
+        <select asp-for="CustomerID" asp-items="ViewBag.Customers" class="form-select">
+            <option value="">-- Select Customer --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Select</button>
+    <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>

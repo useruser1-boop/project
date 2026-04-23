@@ -1,0 +1,18 @@
+@model Property
+@{
+    ViewData["Title"] = "Filter by Property";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="GetProperty" method="post">
+    <div class="mb-3">
+        <label class="form-label">Select a Property</label>
+        <select asp-for="PropertyID" asp-items="ViewBag.Properties" class="form-select">
+            <option value="">-- Select Property --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Select</button>
+    <a asp-action="List" class="btn btn-secondary">Cancel</a>
+</form>
