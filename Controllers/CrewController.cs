@@ -1,5 +1,5 @@
 // File: CrewController.cs | Author: Team 05 | Course: ISTM 415
-// Description: CRUD controller for Crew entity.
+// Description: CRUD controller for Crew entity using CrewViewModel for add/edit forms.
 // On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work.
 using JasperGreen.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -35,40 +35,44 @@ public class CrewController(JasperGreenContext context) : Controller
     /// <summary>
     /// Displays the add crew form with employee dropdowns for foreman and members.
     /// </summary>
-    /// <returns>The add/edit view.</returns>
+    /// <returns>The add/edit view bound to a CrewViewModel.</returns>
     [HttpGet]
     public IActionResult Add()
     {
-        LoadEmployees();
-        return View("AddEdit", new Crew());
+        var objViewModel = new CrewViewModel
+        {
+            Crew = new Crew(),
+            Employees = BuildEmployeeOptions()
+        };
+        return View("AddEdit", objViewModel);
     }
 
     /// <summary>
     /// Creates a new crew record.
     /// </summary>
-    /// <param name="crew">Crew data submitted from the form.</param>
+    /// <param name="objViewModel">CrewViewModel submitted from the form.</param>
     /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Add(Crew crew)
+    public IActionResult Add(CrewViewModel objViewModel)
     {
         if (!ModelState.IsValid)
         {
-            LoadEmployees();
-            return View("AddEdit", crew);
+            objViewModel.Employees = BuildEmployeeOptions();
+            return View("AddEdit", objViewModel);
         }
 
         // Foreman and both crew members must be three distinct employees.
-        if (!AreDistinctEmployees(crew))
+        if (!AreDistinctEmployees(objViewModel.Crew))
         {
             ModelState.AddModelError("", "Crew Foreman and both Crew Members must be three distinct employees.");
-            LoadEmployees();
-            return View("AddEdit", crew);
+            objViewModel.Employees = BuildEmployeeOptions();
+            return View("AddEdit", objViewModel);
         }
 
-        _context.Crews.Add(crew);
+        _context.Crews.Add(objViewModel.Crew);
         _context.SaveChanges();
-        TempData["message"] = $"Crew {crew.CrewName} was added successfully.";
+        TempData["message"] = $"Crew {objViewModel.Crew.CrewName} was added successfully.";
         return RedirectToAction(nameof(List));
     }
 
@@ -86,36 +90,40 @@ public class CrewController(JasperGreenContext context) : Controller
             return RedirectToAction(nameof(List));
         }
 
-        LoadEmployees();
-        return View("AddEdit", objCrew);
+        var objViewModel = new CrewViewModel
+        {
+            Crew = objCrew,
+            Employees = BuildEmployeeOptions()
+        };
+        return View("AddEdit", objViewModel);
     }
 
     /// <summary>
     /// Updates an existing crew record.
     /// </summary>
-    /// <param name="crew">Updated crew data submitted from the form.</param>
+    /// <param name="objViewModel">CrewViewModel submitted from the form.</param>
     /// <returns>Redirect to list when valid; otherwise re-displays form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Crew crew)
+    public IActionResult Edit(CrewViewModel objViewModel)
     {
         if (!ModelState.IsValid)
         {
-            LoadEmployees();
-            return View("AddEdit", crew);
+            objViewModel.Employees = BuildEmployeeOptions();
+            return View("AddEdit", objViewModel);
         }
 
         // Foreman and both crew members must be three distinct employees.
-        if (!AreDistinctEmployees(crew))
+        if (!AreDistinctEmployees(objViewModel.Crew))
         {
             ModelState.AddModelError("", "Crew Foreman and both Crew Members must be three distinct employees.");
-            LoadEmployees();
-            return View("AddEdit", crew);
+            objViewModel.Employees = BuildEmployeeOptions();
+            return View("AddEdit", objViewModel);
         }
 
-        _context.Crews.Update(crew);
+        _context.Crews.Update(objViewModel.Crew);
         _context.SaveChanges();
-        TempData["message"] = $"Crew {crew.CrewName} was updated successfully.";
+        TempData["message"] = $"Crew {objViewModel.Crew.CrewName} was updated successfully.";
         return RedirectToAction(nameof(List));
     }
 
@@ -145,13 +153,13 @@ public class CrewController(JasperGreenContext context) : Controller
     /// Permanently removes a crew record from the database.
     /// Redirects back to the confirmation page with an error if service records prevent deletion.
     /// </summary>
-    /// <param name="crew">Crew payload containing the identifier.</param>
+    /// <param name="objCrew">Crew payload containing the identifier.</param>
     /// <returns>Redirects to the crew list on success; returns delete view on constraint violation.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(Crew crew)
+    public IActionResult Delete(Crew objCrew)
     {
-        var objCurrent = _context.Crews.FirstOrDefault(c => c.CrewID == crew.CrewID);
+        var objCurrent = _context.Crews.FirstOrDefault(c => c.CrewID == objCrew.CrewID);
         if (objCurrent is not null)
         {
             try
@@ -177,10 +185,9 @@ public class CrewController(JasperGreenContext context) : Controller
     [HttpPost]
     public IActionResult Cancel() => RedirectToAction(nameof(List));
 
-    // Populates ViewBag.Employees with all employees sorted by name for the three crew dropdowns.
-    private void LoadEmployees()
-    {
-        var lstEmployeeOptions = _context.Employees
+    // Builds and returns all employee options for the crew position dropdowns.
+    private IEnumerable<SelectListItem> BuildEmployeeOptions() =>
+        _context.Employees
             .OrderBy(e => e.EmployeeLastName)
             .ThenBy(e => e.EmployeeFirstName)
             .Select(e => new SelectListItem
@@ -190,14 +197,9 @@ public class CrewController(JasperGreenContext context) : Controller
             })
             .ToList();
 
-        ViewBag.Employees = lstEmployeeOptions;
-    }
-
     // Validates that the foreman and two crew members are three distinct employees.
-    private static bool AreDistinctEmployees(Crew crew)
-    {
-        return crew.CrewForemanID != crew.CrewMember1ID
-            && crew.CrewForemanID != crew.CrewMember2ID
-            && crew.CrewMember1ID != crew.CrewMember2ID;
-    }  
+    private static bool AreDistinctEmployees(Crew objCrew) =>
+        objCrew.CrewForemanID != objCrew.CrewMember1ID
+        && objCrew.CrewForemanID != objCrew.CrewMember2ID
+        && objCrew.CrewMember1ID != objCrew.CrewMember2ID;
 }
