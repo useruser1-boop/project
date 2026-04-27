@@ -1,0 +1,38 @@
+@* File: Delete.cshtml | Author: Team 05 | Course: ISTM 415
+   Description: Delete confirmation page for Payment entity.
+   On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work. *@
+@model JasperGreen.Models.Payment
+@{
+    ViewData["Title"] = "Delete Payment";
+}
+
+<h2>Delete Payment</h2>
+
+<p>Are you sure you want to delete this payment?</p>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Payment #</dt>
+            <dd class="col-sm-9">@Model.PaymentID</dd>
+
+            <dt class="col-sm-3">Customer</dt>
+            <dd class="col-sm-9">@Model.Customer?.FullName</dd>
+
+            <dt class="col-sm-3">Payment Date</dt>
+            <dd class="col-sm-9">@Model.PaymentDate.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">Amount</dt>
+            <dd class="col-sm-9">@Model.PaymentAmount.ToString("C")</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="PaymentID" />
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+</form>
+
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>

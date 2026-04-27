@@ -1,0 +1,53 @@
+@* File: AddEdit.cshtml | Author: Team 05 | Course: ISTM 415
+   Description: Shared add/edit form for Payment entity. Supports optional service event linking.
+   On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work. *@
+@model JasperGreen.Models.Payment
+@{
+    ViewData["Title"] = Model.PaymentID == 0 ? "Add Payment" : "Edit Payment";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@(Model.PaymentID == 0 ? "Add" : "Edit")" method="post">
+    <input type="hidden" asp-for="PaymentID" />
+    @if (ViewBag.ServiceId != null)
+    {
+        <input type="hidden" name="serviceId" value="@ViewBag.ServiceId" />
+    }
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="CustomerID" class="form-label">Customer *</label>
+        <select asp-for="CustomerID" asp-items="ViewBag.Customers" class="form-select">
+            <option value="">-- Select Customer --</option>
+        </select>
+        <span asp-validation-for="CustomerID" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PaymentDate" class="form-label">Payment Date *</label>
+        <input asp-for="PaymentDate" type="date" class="form-control" />
+        <span asp-validation-for="PaymentDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PaymentAmount" class="form-label">Payment Amount *</label>
+        <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input asp-for="PaymentAmount" class="form-control" />
+        </div>
+        <span asp-validation-for="PaymentAmount" class="text-danger"></span>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
+</form>
+
+<form asp-action="Cancel" method="post" class="mt-2">
+    <button type="submit" class="btn btn-secondary">Cancel</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

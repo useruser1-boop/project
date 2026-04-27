@@ -1,4 +1,6 @@
-@* File: AddEdit.cshtml | Author: Team 05 | Course: ISTM 415 *@
+@* File: AddEdit.cshtml | Author: Team 05 | Course: ISTM 415
+   Description: Shared add/edit form for Customer entity with full field validation.
+   On my honor, as an Aggie, I have neither given nor received unauthorized aid on this academic work. *@
 @model JasperGreen.Models.Customer
 @using Microsoft.AspNetCore.Mvc.Rendering
 @{
@@ -7,6 +9,8 @@
 }
 
 <h2>@ViewData["Title"]</h2>
+
+<p class="text-muted">All fields are required. Phone must be 10 digits; ZIP must be 5 or 9 digits (numbers only).</p>
 
 <form asp-action="@(Model.CustomerID == 0 ? "Add" : "Edit")" method="post">
     <input type="hidden" asp-for="CustomerID" />
@@ -24,33 +28,35 @@
             <span asp-validation-for="LastName" class="text-danger"></span>
         </div>
         <div class="col-md-6">
-            <label asp-for="CustomerPhone" class="form-label">Phone</label>
-            <input asp-for="CustomerPhone" class="form-control" placeholder="10 digits" />
+            <label asp-for="CustomerPhone" class="form-label">Phone *</label>
+            <input asp-for="CustomerPhone" class="form-control" placeholder="e.g. 9791234567" />
+            <small class="form-text text-muted">Enter 10 digits, no spaces or dashes.</small>
             <span asp-validation-for="CustomerPhone" class="text-danger"></span>
         </div>
         <div class="col-md-6">
-            <label asp-for="Email" class="form-label">Email</label>
+            <label asp-for="Email" class="form-label">Email *</label>
             <input asp-for="Email" class="form-control" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="col-md-6">
-            <label asp-for="BillingAddress" class="form-label">Billing Address</label>
+            <label asp-for="BillingAddress" class="form-label">Billing Address *</label>
             <input asp-for="BillingAddress" class="form-control" />
             <span asp-validation-for="BillingAddress" class="text-danger"></span>
         </div>
         <div class="col-md-3">
-            <label asp-for="BillingCity" class="form-label">City</label>
+            <label asp-for="BillingCity" class="form-label">City *</label>
             <input asp-for="BillingCity" class="form-control" />
             <span asp-validation-for="BillingCity" class="text-danger"></span>
         </div>
         <div class="col-md-2">
-            <label asp-for="BillingState" class="form-label">State</label>
+            <label asp-for="BillingState" class="form-label">State *</label>
             <select asp-for="BillingState" asp-items="states" class="form-select"></select>
             <span asp-validation-for="BillingState" class="text-danger"></span>
         </div>
         <div class="col-md-3">
-            <label asp-for="BillingZIP" class="form-label">ZIP</label>
-            <input asp-for="BillingZIP" class="form-control" />
+            <label asp-for="BillingZIP" class="form-label">ZIP *</label>
+            <input asp-for="BillingZIP" class="form-control" placeholder="e.g. 77840 or 778401234" />
+            <small class="form-text text-muted">Enter 5 or 9 digits, no dashes.</small>
             <span asp-validation-for="BillingZIP" class="text-danger"></span>
         </div>
     </div>
